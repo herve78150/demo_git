@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>Uplaoad Ajax</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+</head>
+
+<html>
+    <body>
+        <form id="fload" action="/upload" enctype="multipart/form-data" method="post">
+            <!--<input type="text" name="title"> -->
+            <input type="file" id="myfile" name="file_name" >
+            <input type="submit" value="Upload" >
+        </form>
+
+        <div id="resultat">Resultat</div>
+        
+        <script>
+              
+        $(function(){
+                $('#fload').on('submit',function(e){
+                    e.preventDefault();
+                    var data = new FormData();
+                    var nb_fichier= $('#myfile')[0].files;
+                    if (nb_fichier.length == 0){
+                        $('#resultat').html('<h3>Pas de fichier !!</h3>');
+                        return;
+                    }
+                    $.each($('#myfile')[0].files, function(i,file) {
+                            data.append('file_name', file);
+                    });
+
+                    $.ajax({
+                            type:'POST',
+                            url:'/upload',
+                            data:data,
+                            contentType: false,
+                            processData: false,
+                            success:function(data){
+                                $('#resultat').html('');
+                                if (data.success ==true){
+                                    $('#resultat').html('<h3>Upload réussi !</h3>');
+                                }
+                                else{
+                                    $('#resultat').html('<h3>Upload ko !</h3>');
+                                }
+                            },
+                            error: function(){
+                                $('#resultat').append('Cette requête Ajax n\'a pas abouti');
+                            }
+                    });
+                });   
+        });
+     
+        </script>
+    </body>
+</html>
